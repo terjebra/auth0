@@ -54,22 +54,8 @@ Task("Publish")
 });
 
 
-Task("Package")
-  .IsDependentOn("Publish")
-  .Does(() =>
-{
-  
-  var settings = new DotNetCorePackSettings
-  {
-      Configuration = "Release",
-      OutputDirectory = "./artifacts/"
-  };
-         
-  DotNetCorePack("../src/Auth0", settings);
-});
-
 Task("Dockerize")
-  .IsDependentOn("Package")
+  .IsDependentOn("Publish")
   .Does(() => 
   {
     var name = String.Format("{0}-{1}", imageName, versionInfo.SemVer); 
