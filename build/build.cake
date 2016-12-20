@@ -18,10 +18,9 @@ Task("Version")
     
     var config = ParseJsonFromFile(new FilePath(projectJson));
   
-    config["version"] = versionInfo.SemVer;
+    config["version"] = versionInfo.FullSemVer;
 
     SerializeJsonToFile(new FilePath(projectJson), config); 
-
 });
 
 Task("Restore")
@@ -47,7 +46,7 @@ Task("Publish")
     {
         Framework = "netcoreapp1.0",
         Configuration = "Release",
-        OutputDirectory = "./publish/"
+        OutputDirectory = "./publish/build_" + String.Format("{0}", versionInfo.FullSemVer)
     };
                 
     DotNetCorePublish("../src/Auth0", settings);
@@ -58,7 +57,7 @@ Task("Dockerize")
   .IsDependentOn("Publish")
   .Does(() => 
   {
-    var name = String.Format("{0}-{1}", imageName, versionInfo.SemVer); 
+    var name = String.Format("{0}-{1}-{2}", imageName, versionInfo.SemVer, versionInfo.BuildMetaData); 
     
     var settings = new DockerBuildSettings
     {
