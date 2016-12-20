@@ -1,1 +1,1 @@
-# auth0
+# Auth0 integration with Cake as build system
